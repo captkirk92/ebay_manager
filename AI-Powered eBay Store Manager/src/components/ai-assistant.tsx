@@ -20,10 +20,14 @@ import {
   Zap,
   Settings,
   Workflow,
+  DollarSign,
+  Image as ImageIcon,
 } from "lucide-react";
 import { useEbayData } from "../hooks/useEbayData";
 import { WorkflowManager } from "./workflow-manager";
 import { OrderHealthDashboard } from "./order-health-dashboard";
+import { OrderImageGallery } from "./order-image-gallery";
+import { useMessageImageProcessor } from "../hooks/useMessageImageProcessor";
 
 interface Message {
   id: string;
@@ -58,6 +62,8 @@ export function AIAssistant({
 
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [showImageGallery, setShowImageGallery] = useState(false);
+  const { processMessages, orderImages } = useMessageImageProcessor();
 
   // Analyze real store data and generate insights
   useEffect(() => {
@@ -213,6 +219,9 @@ export function AIAssistant({
     });
 
     setMessages(insights);
+    
+    // Process messages for images
+    processMessages(insights);
   };
 
   const quickActions = [

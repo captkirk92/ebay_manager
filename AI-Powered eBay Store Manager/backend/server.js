@@ -4,7 +4,9 @@ const path = require("path");
 const { spawn } = require("child_process");
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+
+// Export the app for use in start.js
+module.exports = app;
 
 // Middleware
 app.use(cors());
@@ -347,9 +349,4 @@ app.get("/api/orders/health-report", async (req, res) => {
 // Serve React app for all other routes
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../build/index.html"));
-});
-
-app.listen(PORT, () => {
-  console.log(`🚀 eBay Store Manager API server running on port ${PORT}`);
-  console.log(`📊 Dashboard available at http://localhost:${PORT}`);
 });

@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-09-10T14:41:21.697018",
+  "store_info": {
+    "name": "Unknown",
+    "description": "",
+    "url": "",
+    "subscription_level": "",
+    "creation_time": "",
+    "hits": 0
+  },
+  "account_info": {},
+  "user_profile": {
+    "user_id": "",
+    "feedback_score": 0,
+    "positive_feedback_percent": 0,
+    "feedback_private": false,
+    "registration_date": "",
+    "site": "",
+    "status": "",
+    "seller_info": {}
+  },
+  "listings": {
+    "active": [],
+    "sold": [],
+    "unsold": []
+  },
+  "financial": {
+    "account_summary": {
+      "current_balance": "0",
+      "currency": "USD",
+      "last_invoice_date": "",
+      "account_state": ""
+    },
+    "recent_transactions": []
+  },
+  "categories": {},
+  "analytics": {
+    "performance_metrics": {},
+    "seller_dashboard": {}
+  },
+  "summary_stats": {
+    "total_active_listings": 0,
+    "total_sold_items": 0,
+    "total_unsold_items": 0,
+    "total_revenue": 0,
+    "average_sale_price": 0,
+    "success_rate": 0,
+    "conversion_rate": 0,
+    "feedback_score": 0,
+    "positive_feedback_percent": 0
+  }
+}
