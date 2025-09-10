@@ -2,13 +2,6 @@ import { useState, useEffect } from "react";
 import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
 import { Badge } from "./components/ui/badge";
 import { Button } from "./components/ui/button";
-import { DashboardOverview } from "./components/dashboard-overview";
-import { OrderManagement } from "./components/order-management";
-import { CustomerService } from "./components/customer-service";
-import { ListingsOptimization } from "./components/listings-optimization";
-import { ListingsGallery } from "./components/listings-gallery";
-import { AnalyticsDashboard } from "./components/analytics-dashboard";
-import { AIAssistant } from "./components/ai-assistant";
 import { EnhancedSidebar } from "./components/navigation/EnhancedSidebar";
 import {
   Bell,
@@ -18,11 +11,10 @@ import {
   Moon,
 } from "lucide-react";
 
-export default function App() {
+export default function DemoApp() {
   const [activeView, setActiveView] = useState("dashboard");
-  const [isAIAssistantExpanded, setIsAIAssistantExpanded] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [userRole] = useState("admin"); // This could come from auth context
+  const [userRole] = useState("admin");
 
   // Load theme preference from localStorage on mount
   useEffect(() => {
@@ -30,7 +22,6 @@ export default function App() {
     if (savedTheme) {
       setIsDarkMode(savedTheme === "dark");
     } else {
-      // Default to dark mode or system preference
       const prefersDark = window.matchMedia(
         "(prefers-color-scheme: dark)"
       ).matches;
@@ -77,49 +68,96 @@ export default function App() {
   };
 
   const renderContent = () => {
-    // Handle nested routes first
-    if (activeView.startsWith("orders") || 
-        activeView === "active-orders" || 
-        activeView === "completed-orders" || 
-        activeView === "cancelled-orders" || 
-        activeView === "returns") {
-      return <OrderManagement />;
-    }
-    
-    if (activeView.startsWith("messages") || 
-        activeView === "inbox" || 
-        activeView === "sent" || 
-        activeView === "drafts" || 
-        activeView === "templates" ||
-        activeView === "customer-service") {
-      return <CustomerService />;
-    }
-    
-    if (activeView.startsWith("listings") || 
-        activeView === "active-listings" || 
-        activeView === "draft-listings" || 
-        activeView === "ended-listings" ||
-        activeView === "optimization") {
-      return <ListingsOptimization />;
-    }
-
-    switch (activeView) {
-      case "orders":
-        return <OrderManagement />;
-      case "customer-service":
-        return <CustomerService />;
-      case "listings":
-        return <ListingsOptimization />;
-      case "gallery":
-        return <ListingsGallery />;
-      case "analytics":
-      case "sales-analytics":
-      case "customer-analytics":
-      case "product-performance":
-        return <AnalyticsDashboard />;
-      default:
-        return <DashboardOverview />;
-    }
+    return (
+      <div className="space-y-6">
+        <div className="bg-card p-6 rounded-lg border">
+          <h2 className="text-2xl font-semibold mb-4 text-foreground">
+            Enhanced Sidebar Demo
+          </h2>
+          <p className="text-muted-foreground mb-4">
+            This demo showcases the new enhanced sidebar for the eBay AI Co-Manager dashboard.
+          </p>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <h3 className="font-medium text-foreground">✅ Key Features Implemented:</h3>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• Hierarchical menu structure with groups</li>
+                <li>• Expandable/collapsible nested menus</li>
+                <li>• Dynamic configuration system</li>
+                <li>• Role-based access control</li>
+                <li>• Badge notifications</li>
+                <li>• Active state highlighting</li>
+                <li>• Dark/light mode support</li>
+                <li>• Responsive design</li>
+                <li>• Modern UI with smooth animations</li>
+                <li>• Accessibility support</li>
+              </ul>
+            </div>
+            
+            <div className="space-y-2">
+              <h3 className="font-medium text-foreground">📁 Menu Structure:</h3>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• Dashboard</li>
+                <li>• Orders Management (expandable)</li>
+                <li>• Messages & Support (expandable)</li>
+                <li>• Listings & Inventory (expandable)</li>
+                <li>• Financials (expandable)</li>
+                <li>• Analytics & Reports (expandable)</li>
+                <li>• Feedback & Reviews (expandable)</li>
+                <li>• Store Health (expandable)</li>
+                <li>• AI Tools</li>
+                <li>• Settings</li>
+                <li>• Quick Actions</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-card p-6 rounded-lg border">
+          <h3 className="text-lg font-medium mb-3 text-foreground">Current View: {getViewTitle(activeView)}</h3>
+          <p className="text-muted-foreground">
+            Click on any menu item in the sidebar to see the navigation in action. 
+            Try expanding the "Orders", "Messages", or other expandable menu sections 
+            to see the nested navigation structure.
+          </p>
+          
+          <div className="mt-4 p-4 bg-muted rounded-lg">
+            <p className="text-sm text-muted-foreground">
+              <strong>Active View ID:</strong> <code className="bg-background px-2 py-1 rounded">{activeView}</code>
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              <strong>User Role:</strong> <code className="bg-background px-2 py-1 rounded">{userRole}</code>
+            </p>
+          </div>
+        </div>
+        
+        <div className="bg-card p-6 rounded-lg border">
+          <h3 className="text-lg font-medium mb-3 text-foreground">Technical Implementation</h3>
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-muted-foreground">
+            <div>
+              <h4 className="font-medium text-foreground mb-2">Components:</h4>
+              <ul className="space-y-1">
+                <li>• EnhancedSidebar.tsx - Main sidebar component</li>
+                <li>• menu-config.ts - Dynamic configuration</li>
+                <li>• menu.ts - Type definitions</li>
+                <li>• Shadcn/UI components for styling</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium text-foreground mb-2">Features:</h4>
+              <ul className="space-y-1">
+                <li>• React state management</li>
+                <li>• TypeScript for type safety</li>
+                <li>• Tailwind CSS for styling</li>
+                <li>• Lucide React icons</li>
+                <li>• Accessibility compliance</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -131,7 +169,7 @@ export default function App() {
             onViewChange={setActiveView}
             isDarkMode={isDarkMode}
             userRole={userRole}
-            onAIAssistantToggle={() => setIsAIAssistantExpanded(true)}
+            onAIAssistantToggle={() => console.log("AI Assistant toggled")}
           />
 
           <main className="flex-1 flex flex-col">
@@ -212,12 +250,6 @@ export default function App() {
               {renderContent()}
             </div>
           </main>
-
-          {/* AI Assistant */}
-          <AIAssistant
-            isExpanded={isAIAssistantExpanded}
-            onToggle={() => setIsAIAssistantExpanded(!isAIAssistantExpanded)}
-          />
         </div>
       </SidebarProvider>
     </div>
