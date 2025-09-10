@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import {
-  ebayApi,
+  ebayApi
+} from "../services/api";
+import {
   StoreSummary,
   OrderResponse,
   ListingsResponse,
-  AnalyticsData,
-  HealthData,
+  AnalyticsData
 } from "../services/ebayApi";
+import { HealthData } from "../types/types";
 
 export interface UseEbayDataReturn {
   // Data
@@ -86,7 +88,7 @@ export function useEbayData(initialDaysBack: number = 30): UseEbayDataReturn {
     setIsOrdersLoading(true);
     setOrdersError(null);
     try {
-      const data = await ebayApi.getOrders(daysBack);
+      const data = await ebayApi.getOrders();
       setOrders(data);
     } catch (err) {
       const errorMessage =
@@ -118,7 +120,7 @@ export function useEbayData(initialDaysBack: number = 30): UseEbayDataReturn {
     setIsAnalyticsLoading(true);
     setAnalyticsError(null);
     try {
-      const data = await ebayApi.getAnalytics(daysBack);
+      const data = await ebayApi.getAnalytics();
       setAnalytics(data);
     } catch (err) {
       const errorMessage =
@@ -134,7 +136,7 @@ export function useEbayData(initialDaysBack: number = 30): UseEbayDataReturn {
     setIsHealthLoading(true);
     setHealthError(null);
     try {
-      const data = await ebayApi.getStoreHealth();
+      const data = await ebayApi.getHealth();
       setHealth(data);
     } catch (err) {
       const errorMessage =

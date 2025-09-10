@@ -1,0 +1,179 @@
+📘 AI Coding Agent Playbook: Connecting eBay API Data to Dashboards
+🔑 Core Principles
+
+Never expose eBay API keys or tokens to the frontend.
+All API calls must go through the backend.
+
+Always handle OAuth2.0 tokens correctly.
+
+Fetch token → Refresh token → Use token in API calls.
+
+Keep code modular.
+
+One service for authentication.
+
+One service for fetching data.
+
+One API layer for frontend consumption.
+
+🏗️ Workflow Overview
+
+Authenticate with eBay (OAuth2.0).
+
+Fetch data from eBay (Orders, Inventory, Messages, etc.).
+
+Expose that data via backend routes (REST/GraphQL).
+
+Frontend fetches from backend → renders into dashboard components.
+
+⚙️ Step 1: Authentication Module
+
+The agent should always build a reusable auth service.
+
+Python Example (auth_service.py):
+
+import base64, httpx, os
+
+APP_ID = os.getenv("EBAY_APP_ID")
+CERT_ID = os.getenv("EBAY_CERT_ID")
+REDIRECT_URI = os.getenv("EBAY_REDIRECT_URI")
+
+def get_access_token(auth_code: str):
+    basic_auth = base64.b64encode(f"{APP_ID}:{CERT_ID}".encode()).decode()
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": f"Basic {basic_auth}"
+    }
+    data = {
+        "grant_type": "authorization_code",
+        "code": auth_code,
+        "redirect_uri": REDIRECT_URI
+    }
+    response = httpx.post(
+        "https://api.ebay.com/identity/v1/oauth2/token", 
+        headers=headers, 
+        data=data
+    )
+    return response.json()["access_token"]
+
+
+✅ Rule for Agent:
+
+Always isolate token logic in a dedicated file/service.
+
+Always read credentials from environment variables.
+
+⚙️ Step 2: eBay Data Fetching
+
+The agent should create modular API clients for each eBay endpoint.
+
+Example: Orders Service (ebay_orders.py):
+
+import httpx
+
+def get_orders(token: str):
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    url = "https://api.ebay.com/sell/fulfillment/v1/order"
+    resp = httpx.get(url, headers=headers)
+    return resp.json().get("orders", [])
+
+
+✅ Rule for Agent:
+
+Always make backend calls with the latest token.
+
+Always return parsed JSON, not raw responses.
+
+⚙️ Step 3: Backend API for Frontend
+
+The agent should expose clean API endpoints for the frontend to consume.
+
+FastAPI Example (main.py):
+
+from fastapi import FastAPI
+from ebay_orders import get_orders
+
+app = FastAPI()
+
+@app.get("/api/orders")
+def orders():
+    token = "DYNAMIC_ACCESS_TOKEN"  # Replace with token from auth flow
+    return {"orders": get_orders(token)}
+
+
+✅ Rule for Agent:
+
+Never hardcode tokens in production.
+
+Always create a backend endpoint that the frontend can call.
+
+⚙️ Step 4: Frontend Integration
+
+The agent should fetch from /api/... routes, never directly from eBay.
+
+React Example (OrdersDashboard.jsx):
+
+import { useEffect, useState } from "react";
+
+export default function OrdersDashboard() {
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/orders")
+      .then(res => res.json())
+      .then(data => setOrders(data.orders || []));
+  }, []);
+
+  return (
+    <div className="p-4">
+      <h1 className="text-xl font-bold">eBay Orders</h1>
+      <table className="w-full border mt-4">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Buyer</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map(order => (
+            <tr key={order.orderId}>
+              <td>{order.orderId}</td>
+              <td>{order.buyer.username}</td>
+              <td>{order.pricingSummary.total.value} {order.pricingSummary.total.currency}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+
+✅ Rule for Agent:
+
+Always fetch from /api/... backend routes.
+
+Always render data in a dashboard-friendly format (tables, cards, charts).
+
+📊 Supported eBay Data Modules
+
+Orders → /sell/fulfillment/v1/order
+
+Inventory → /sell/inventory/v1/inventory_item
+
+Messages → /sell/communication/v1
+
+Transactions → /finances/v1/transaction
+
+Listings & Performance → /sell/analytics/v1
+
+🧠 Agent Learning Prompts
+
+When you want your agent to act, you can use commands like:
+
+“Fetch my eBay orders and display them in a React table on the dashboard.”
+
+“Add a backend API route that fetches inventory items from eBay and sends them to the frontend.”
+
+“Update the dashboard to show total sales in a chart using the finances API.”

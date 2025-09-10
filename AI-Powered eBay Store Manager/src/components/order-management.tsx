@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Clock, Package, Truck, AlertCircle, Loader2 } from "lucide-react";
 import { useEbayData } from "../hooks/useEbayData";
 import { useMemo } from "react";
+import eBayOrdersDashboard from "./eBayOrdersDashboard";
 
 export function OrderManagement() {
   const { orders, isOrdersLoading, ordersError, refreshOrders } = useEbayData();
@@ -163,13 +164,18 @@ export function OrderManagement() {
           <CardTitle>Recent Orders</CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="all" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+          <Tabs defaultValue="ebay" className="w-full">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="ebay">eBay Orders</TabsTrigger>
               <TabsTrigger value="all">All Orders</TabsTrigger>
               <TabsTrigger value="urgent">Urgent</TabsTrigger>
               <TabsTrigger value="processing">Processing</TabsTrigger>
               <TabsTrigger value="shipped">Shipped</TabsTrigger>
             </TabsList>
+            
+            <TabsContent value="ebay" className="space-y-4">
+              <eBayOrdersDashboard />
+            </TabsContent>
             
             <TabsContent value="all" className="space-y-4">
               <Table>

@@ -1,0 +1,27 @@
+{
+  "orders": {
+    "OrderArray": [],
+    "PaginationResult": {}
+  },
+  "customers": [],
+  "returns": [],
+  "fulfillment": [],
+  "financials": {
+    "sales": 0,
+    "refunds": 0.0,
+    "fees": 0.0,
+    "profitMargin": 0.0
+  },
+  "policyMetrics": {
+    "defectRate": 0.0,
+    "lateShipmentRate": 0.0,
+    "casesClosedWithoutSellerResolution": 0,
+    "feedbackScore": 0.0
+  },
+  "store_info": {
+    "name": "midnight sun printing",
+    "user_id": "midnightsundirect",
+    "active_listings": 13
+  },
+  "total_orders": 30
+}

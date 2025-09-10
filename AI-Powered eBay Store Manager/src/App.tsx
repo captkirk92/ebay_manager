@@ -10,6 +10,8 @@ import { ListingsGallery } from "./components/listings-gallery";
 import { AnalyticsDashboard } from "./components/analytics-dashboard";
 import { AIAssistant } from "./components/ai-assistant";
 import { EnhancedSidebar } from "./components/navigation/EnhancedSidebar";
+import MaterialDashboard from "./components/MaterialDashboard";
+import EnhancedMaterialDashboard from "./components/EnhancedMaterialDashboard";
 import {
   Bell,
   HelpCircle,
@@ -19,10 +21,28 @@ import {
 } from "lucide-react";
 
 export default function App() {
-  const [activeView, setActiveView] = useState("dashboard");
+  const [activeView, setActiveView] = useState("material-dashboard");
   const [isAIAssistantExpanded, setIsAIAssistantExpanded] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [userRole] = useState("admin"); // This could come from auth context
+
+  // If Material Dashboard is active, render it completely independently
+  if (activeView === "material-dashboard") {
+    return (
+      <div className={isDarkMode ? "dark" : ""}>
+        <MaterialDashboard />
+      </div>
+    );
+  }
+
+  // If Enhanced Material Dashboard is active
+  if (activeView === "enhanced-dashboard") {
+    return (
+      <div className={isDarkMode ? "dark" : ""}>
+        <EnhancedMaterialDashboard />
+      </div>
+    );
+  }
 
   // Load theme preference from localStorage on mount
   useEffect(() => {
@@ -77,6 +97,15 @@ export default function App() {
   };
 
   const renderContent = () => {
+    // Handle Material Dashboard as primary view - render it independently
+    if (activeView === "material-dashboard") {
+      return (
+        <div className="w-full h-full">
+          <MaterialDashboard />
+        </div>
+      );
+    }
+    
     // Handle nested routes first
     if (activeView.startsWith("orders") || 
         activeView === "active-orders" || 

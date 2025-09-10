@@ -48,6 +48,86 @@ class StoreDataPipeline:
         except Exception as e:
             print(f"❌ Error collecting raw data: {e}")
             return False
+
+    def process_and_save(self):
+        """STEP 2: Process raw data into structured format and save for frontend"""
+        print("🔄 STEP 2: Processing and saving data...")
+        
+        try:
+            # Process summary data
+            if 'summary' in self.raw_data:
+                summary = self.raw_data['summary']
+                
+                # Handle API response structure with 'data' wrapper
+                if isinstance(summary, dict) and 'data' in summary:
+                    data = summary['data']
+                    self.structured_data['store_info'] = {
+                        'name': data.get('store_name', 'Unknown'),
+                        'user_id': data.get('user_id', 'Unknown'),
+                        'active_listings': data.get('selling_data', {}).get('active_listings', 0)
+                    }
+                    
+                    # Add selling data to structured data
+                    selling_data = data.get('selling_data', {})
+                    self.structured_data['financials']['sales'] = selling_data.get('total_revenue', 0.0)
+                    self.structured_data['total_orders'] = selling_data.get('total_sales', 0)
+                else:
+                    # Fallback for direct data format
+                    if isinstance(summary, str):
+                        summary = json.loads(summary)
+                        
+                    self.structured_data['store_info'] = {
+                        'name': summary.get('store_name', 'Unknown'),
+                        'user_id': summary.get('user_id', 'Unknown'),
+                        'active_listings': summary.get('selling_data', {}).get('active_listings', 0)
+                    }
+
+            # Process orders data
+            if 'orders' in self.raw_data:
+                orders_data = self.raw_data['orders']
+                
+                # Handle API response structure with 'data' wrapper
+                if isinstance(orders_data, dict) and 'data' in orders_data:
+                    orders_list = orders_data['data']
+                else:
+                    orders_list = orders_data if isinstance(orders_data, list) else []
+                
+                self.structured_data['orders'] = orders_list
+                
+                # Calculate financial metrics if we have order data
+                if orders_list:
+                    total_sales = sum(float(order.get('total', 0)) for order in orders_list if isinstance(order, dict))
+                    self.structured_data['financials']['sales'] = total_sales
+
+            # Process analytics data
+            if 'analytics' in self.raw_data:
+                analytics = self.raw_data['analytics']
+                
+                # Handle API response structure with 'data' wrapper
+                if isinstance(analytics, dict) and 'data' in analytics:
+                    analytics_data = analytics['data']
+                else:
+                    analytics_data = analytics
+                    
+                if isinstance(analytics_data, dict) and 'metrics' in analytics_data:
+                    metrics = analytics_data['metrics']
+                    self.structured_data['policyMetrics'].update({
+                        'defectRate': metrics.get('defect_rate', 0.0),
+                        'lateShipmentRate': metrics.get('late_shipment_rate', 0.0),
+                        'feedbackScore': metrics.get('feedback_score', 0)
+                    })
+
+            # Save structured data to file for frontend
+            data_path = 'src/data/store_data.json'
+            with open(data_path, 'w') as f:
+                json.dump(self.structured_data, f, indent=2)
+            
+            print(f"✅ Data saved to {data_path}")
+            return True
+
+        except Exception as e:
+            print(f"❌ Error processing data: {e}")
+            raise
     
     def normalize_orders(self):
         """Normalize orders data to schema"""
